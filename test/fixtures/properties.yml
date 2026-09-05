@@ -1,0 +1,43 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  title: MyString
+  description: MyText
+  property_type: MyString
+  subtype: MyString
+  location: MyString
+  price: 9.99
+  dispute_status: MyString
+  dispute_summary: MyText
+  status: MyString
+  approved: false
+  mutation_document: MyString
+  title_document: MyString
+  aksfard_document: MyString
+  court_case_document: MyString
+  ownership_type: MyString
+  total_area: MyString
+  jamabandi_year: MyString
+  boundaries: MyText
+
+two:
+  user: two
+  title: MyString
+  description: MyText
+  property_type: MyString
+  subtype: MyString
+  location: MyString
+  price: 9.99
+  dispute_status: MyString
+  dispute_summary: MyText
+  status: MyString
+  approved: false
+  mutation_document: MyString
+  title_document: MyString
+  aksfard_document: MyString
+  court_case_document: MyString
+  ownership_type: MyString
+  total_area: MyString
+  jamabandi_year: MyString
+  boundaries: MyText

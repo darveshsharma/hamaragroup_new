@@ -1,0 +1,36 @@
+<!-- app/views/profiles/edit.html.erb -->
+<div class="relative min-h-screen flex items-center justify-center bg-gray-900 px-4">
+  <div class="absolute inset-0">
+    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=80" class="w-full h-full object-cover" />
+    <div class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"></div>
+  </div>
+
+  <div class="relative z-10 bg-white bg-opacity-95 backdrop-blur-md p-10 rounded-3xl shadow-2xl w-full max-w-2xl">
+    <h2 class="text-3xl font-bold text-gray-800 mb-6">Complete Your Profile</h2>
+
+    <%= form_with(model: @user, url: profile_path, method: :patch, local: true) do |f| %>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <%= f.label :first_name, class: "text-sm font-medium text-gray-700" %>
+          <%= f.text_field :first_name, class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring focus:ring-blue-500" %>
+        </div>
+        <div>
+          <%= f.label :last_name, class: "text-sm font-medium text-gray-700" %>
+          <%= f.text_field :last_name, class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring focus:ring-blue-500" %>
+        </div>
+        <div>
+          <%= f.label :phone, class: "text-sm font-medium text-gray-700" %>
+          <%= f.telephone_field :phone, class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring focus:ring-blue-500" %>
+        </div>
+        <div>
+          <%= f.label :address, class: "text-sm font-medium text-gray-700" %>
+          <%= f.text_field :address, class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring focus:ring-blue-500" %>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <%= f.submit "Complete Profile", class: "w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition" %>
+      </div>
+    <% end %>
+  </div>
+</div>

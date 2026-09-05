@@ -1,0 +1,43 @@
+<section class="py-12 bg-gray-50">
+  <div class="max-w-4xl mx-auto px-4 text-center">
+   <% if current_user.active_member? %>
+   <h1 class="text-4xl font-bold mb-4">Already a HamaraGroup Member</h1>
+<% else %>
+<h1 class="text-4xl font-bold mb-4">Become a HamaraGroup Member</h1>
+
+<%end%>
+    <p class="text-lg mb-8 text-gray-700">
+      Unlock exclusive access to high-value properties, expert consultation, and legal support for disputed assets.
+    </p>
+
+    <div class="bg-white rounded shadow p-8 mb-8">
+      <h2 class="text-2xl font-semibold mb-4">Membership Benefits</h2>
+      <ul class="text-left list-disc list-inside space-y-2 text-gray-600">
+        <li>Access to premium high-value and disputed properties</li>
+        <li>Priority consultation with property experts</li>
+        <li>Legal support for property disputes and documentation</li>
+        <li>Exclusive investment opportunities and listings</li>
+        <li>One-time membership fee, lifetime access</li>
+      </ul>
+    </div>
+
+    <% if current_user.active_member? %>
+      <!-- ALREADY A MEMBER -->
+      <div class="mb-8">
+        <p class="text-2xl font-bold text-green-600 mb-4">🎉 You're already a lifetime member!</p>
+        <p class="text-gray-700">Enjoy full access to all our premium features.</p>
+      </div>
+    <% else %>
+      <!-- NOT A MEMBER YET -->
+      <div class="mb-8">
+        <p class="text-2xl font-bold mb-4">Join now for only ₹10,000</p>
+        <%= link_to "Become a Member", new_membership_payment_path, class: "bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-3 px-6 rounded" %>
+      </div>
+    <% end %>
+
+    <p class="text-gray-500 text-sm">
+      Note: Membership fee is non-refundable. For any questions, contact our support team.
+    </p>
+  </div>
+</section>
+

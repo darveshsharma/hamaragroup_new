@@ -1,0 +1,183 @@
+<%= form_with(model: property, local: true, html: { multipart: true, class: "space-y-8" }) do |form| %>
+  <% if property.errors.any? %>
+    <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-red-800">
+      <p class="font-semibold">Please fix the following:</p>
+      <ul class="mt-2 list-disc list-inside text-sm">
+        <% property.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100">
+    <h2 class="mb-5 text-xl font-bold text-[#354041]">Property details</h2>
+
+    <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+      <div>
+        <%= form.label :title, "Property title", class: "mb-1 block text-sm font-semibold text-gray-700" %>
+        <%= form.text_field :title, required: true, placeholder: "e.g. 2 Acre Residential Plot",
+            class: "w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-[#ccaa79] focus:outline-none focus:ring-2 focus:ring-[#ccaa79]/30" %>
+      </div>
+
+      <div>
+        <%= form.label :property_type, "Property type", class: "mb-1 block text-sm font-semibold text-gray-700" %>
+        <%= form.select :property_type,
+            ["Residential", "Commercial", "Agricultural", "Plot", "Villa", "Apartment"],
+            { prompt: "Select type" },
+            { required: true, class: "w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-[#ccaa79] focus:outline-none" } %>
+      </div>
+
+      <div>
+        <%= form.label :subtype, "Subtype", class: "mb-1 block text-sm font-semibold text-gray-700" %>
+        <%= form.text_field :subtype, placeholder: "Optional",
+            class: "w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-[#ccaa79] focus:outline-none" %>
+      </div>
+
+      <div>
+        <%= form.label :location, "Location", class: "mb-1 block text-sm font-semibold text-gray-700" %>
+        <%= form.text_field :location, required: true, placeholder: "City, district, state",
+            class: "w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-[#ccaa79] focus:outline-none" %>
+      </div>
+
+      <div>
+        <%= form.label :price, "Price (₹)", class: "mb-1 block text-sm font-semibold text-gray-700" %>
+        <%= form.number_field :price, required: true, min: 1, step: 0.01, placeholder: "Enter property value",
+            class: "w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-[#ccaa79] focus:outline-none" %>
+      </div>
+
+      <div>
+        <%= form.label :ownership_type, "Ownership type", class: "mb-1 block text-sm font-semibold text-gray-700" %>
+        <%= form.text_field :ownership_type, placeholder: "Freehold / leasehold / etc.",
+            class: "w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-[#ccaa79] focus:outline-none" %>
+      </div>
+
+      <div>
+        <%= form.label :total_area, "Total area", class: "mb-1 block text-sm font-semibold text-gray-700" %>
+        <%= form.text_field :total_area, placeholder: "e.g. 2 acres",
+            class: "w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-[#ccaa79] focus:outline-none" %>
+      </div>
+
+      <div>
+        <%= form.label :jamabandi_year, "Jamabandi year", class: "mb-1 block text-sm font-semibold text-gray-700" %>
+        <%= form.number_field :jamabandi_year, placeholder: "Year",
+            class: "w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-[#ccaa79] focus:outline-none" %>
+      </div>
+
+      <div class="md:col-span-2">
+        <%= form.label :description, class: "mb-1 block text-sm font-semibold text-gray-700" %>
+        <%= form.text_area :description, rows: 4, placeholder: "Describe the property, access, amenities, and other important details.",
+            class: "w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-[#ccaa79] focus:outline-none" %>
+      </div>
+
+      <div class="md:col-span-2">
+        <%= form.label :boundaries, class: "mb-1 block text-sm font-semibold text-gray-700" %>
+        <%= form.text_area :boundaries, rows: 3, placeholder: "North / South / East / West boundaries",
+            class: "w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-[#ccaa79] focus:outline-none" %>
+      </div>
+
+      <div>
+        <%= form.label :dispute_status, "Dispute status", class: "mb-1 block text-sm font-semibold text-gray-700" %>
+        <%= form.text_field :dispute_status, placeholder: "None / pending / resolved",
+            class: "w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-[#ccaa79] focus:outline-none" %>
+      </div>
+
+      <div class="md:col-span-2">
+        <%= form.label :dispute_summary, class: "mb-1 block text-sm font-semibold text-gray-700" %>
+        <%= form.text_area :dispute_summary, rows: 2, placeholder: "Add context if there is a dispute.",
+            class: "w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-[#ccaa79] focus:outline-none" %>
+      </div>
+    </div>
+
+    <% if current_user.admin? %>
+      <div class="mt-6 grid grid-cols-1 gap-5 border-t pt-6 md:grid-cols-3">
+        <div>
+          <%= form.label :status, class: "mb-1 block text-sm font-semibold text-gray-700" %>
+          <%= form.select :status, [["Available", "available"], ["Pending", "pending"], ["Sold", "sold"]],
+              { prompt: "Select status" }, class: "w-full rounded-xl border border-gray-300 px-4 py-3" %>
+        </div>
+        <label class="flex items-center gap-3 pt-7 text-sm font-semibold text-gray-700">
+          <%= form.check_box :approved, class: "h-5 w-5 rounded" %>
+          Verified / approved
+        </label>
+        <label class="flex items-center gap-3 pt-7 text-sm font-semibold text-gray-700">
+          <%= form.check_box :featured, class: "h-5 w-5 rounded" %>
+          Featured property
+        </label>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100">
+    <h2 class="text-xl font-bold text-[#354041]">Property images</h2>
+    <p class="mt-1 text-sm text-gray-500">Upload a main image and optional gallery images.</p>
+
+    <div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+      <div>
+        <%= form.label :main_image, "Main image", class: "mb-2 block text-sm font-semibold text-gray-700" %>
+        <% if property.main_image.attached? %>
+          <%= image_tag property.main_image, class: "mb-3 h-40 w-full rounded-xl object-cover" %>
+        <% end %>
+        <%= form.file_field :main_image, accept: "image/png,image/jpeg,image/webp",
+            class: "w-full rounded-xl border border-gray-300 p-3" %>
+      </div>
+
+      <div>
+        <%= form.label :thumbnail, "Thumbnail", class: "mb-2 block text-sm font-semibold text-gray-700" %>
+        <% if property.thumbnail.attached? %>
+          <%= image_tag property.thumbnail, class: "mb-3 h-40 w-full rounded-xl object-cover" %>
+        <% end %>
+        <%= form.file_field :thumbnail, accept: "image/png,image/jpeg,image/webp",
+            class: "w-full rounded-xl border border-gray-300 p-3" %>
+      </div>
+
+      <div class="md:col-span-2">
+        <%= form.label :images, "Gallery images", class: "mb-2 block text-sm font-semibold text-gray-700" %>
+        <% if property.images.attached? %>
+          <div class="mb-3 flex flex-wrap gap-2">
+            <% property.images.each do |image| %>
+              <%= image_tag image, class: "h-20 w-20 rounded-lg object-cover" %>
+            <% end %>
+          </div>
+        <% end %>
+        <%= form.file_field :images, multiple: true, accept: "image/png,image/jpeg,image/webp",
+            class: "w-full rounded-xl border border-gray-300 p-3" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100">
+    <h2 class="text-xl font-bold text-[#354041]">Verified documents</h2>
+    <p class="mt-1 text-sm text-gray-500">
+      Title, mutation, Aksfard, and court-case documents are required for verification.
+    </p>
+
+    <% {
+      title_document_files: "Title documents",
+      mutation_document_files: "Mutation documents",
+      aksfard_document_files: "Aksfard documents",
+      court_case_document_files: "Court case documents",
+      supporting_documents: "Supporting documents (optional)"
+    }.each do |field, label| %>
+      <div class="mt-5">
+        <%= form.label field, label, class: "mb-2 block text-sm font-semibold text-gray-700" %>
+        <% if property.public_send(field).attached? %>
+          <ul class="mb-2 space-y-1 text-sm text-gray-600">
+            <% property.public_send(field).each do |document| %>
+              <li>✓ <%= document.filename %></li>
+            <% end %>
+          </ul>
+        <% end %>
+        <%= form.file_field field, multiple: true, accept: ".pdf,.jpg,.jpeg,.png",
+            class: "w-full rounded-xl border border-gray-300 p-3" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
+    <%= link_to "Cancel", property.persisted? ? property_path(property) : properties_path,
+        class: "rounded-xl border border-gray-300 px-6 py-3 text-center font-semibold text-gray-700 hover:bg-gray-50" %>
+    <%= form.submit(property.persisted? ? "Save changes" : "Submit property",
+        class: "rounded-xl bg-[#354041] px-8 py-3 font-bold text-white hover:bg-black") %>
+  </div>
+<% end %>

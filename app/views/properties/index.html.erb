@@ -1,0 +1,105 @@
+<section class="relative overflow-hidden bg-[#354041] px-4 py-20 text-center text-white">
+  <div class="absolute inset-0 opacity-30">
+    <img src="https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=1600&q=80"
+         alt="" class="h-full w-full object-cover">
+  </div>
+  <div class="relative mx-auto max-w-4xl">
+    <p class="text-sm font-semibold uppercase tracking-[0.25em] text-[#d6ad72]">HamaraGroup</p>
+    <h1 class="mt-3 text-4xl font-extrabold md:text-6xl">Find your next property</h1>
+    <p class="mx-auto mt-4 max-w-2xl text-lg text-gray-200">
+      Explore verified listings and connect with our team when you're ready.
+    </p>
+  </div>
+</section>
+
+<section class="border-b bg-white px-4 py-6">
+  <div class="mx-auto max-w-7xl">
+    <%= form_with url: properties_path, method: :get, local: true,
+                  class: "grid grid-cols-1 gap-3 md:grid-cols-4" do |form| %>
+      <%= form.search_field :q, value: params[:q], placeholder: "Search title or location",
+          class: "rounded-xl border border-gray-300 px-4 py-3 focus:border-[#ccaa79] focus:outline-none" %>
+
+      <%= form.select :property_type,
+          options_for_select([["Any type", ""]] + @property_types.map { |type| [type, type] }, params[:property_type]),
+          {}, class: "rounded-xl border border-gray-300 px-4 py-3 focus:border-[#ccaa79] focus:outline-none" %>
+
+      <%= form.number_field :min_price, value: params[:min_price], min: 0, step: 1,
+          placeholder: "Minimum price",
+          class: "rounded-xl border border-gray-300 px-4 py-3 focus:border-[#ccaa79] focus:outline-none" %>
+
+      <%= form.number_field :max_price, value: params[:max_price], min: 0, step: 1,
+          placeholder: "Maximum price",
+          class: "rounded-xl border border-gray-300 px-4 py-3 focus:border-[#ccaa79] focus:outline-none" %>
+
+      <div class="flex gap-3 md:col-span-4 md:justify-end">
+        <%= link_to "Clear", properties_path, class: "rounded-xl border border-gray-300 px-6 py-3 font-semibold text-gray-700 hover:bg-gray-50" %>
+        <%= form.submit "Search", class: "rounded-xl bg-[#354041] px-8 py-3 font-bold text-white hover:bg-black" %>
+      </div>
+    <% end %>
+  </div>
+</section>
+
+<section class="bg-gray-50 px-4 py-14">
+  <div class="mx-auto max-w-7xl">
+    <% if @properties.any? %>
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <% @properties.each do |property| %>
+          <article class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-100 transition hover:-translate-y-1 hover:shadow-xl">
+            <div class="relative">
+              <% if property.main_image.attached? %>
+                <%= image_tag property.main_image, alt: property.title, class: "h-64 w-full object-cover" %>
+              <% else %>
+                <div class="flex h-64 items-center justify-center bg-gray-200 text-gray-500">No image available</div>
+              <% end %>
+
+              <% if property.approved? %>
+                <span class="absolute right-3 top-3 rounded-full bg-green-600 px-3 py-1 text-xs font-bold text-white shadow">
+                  ✓ Verified
+                </span>
+              <% end %>
+            </div>
+
+            <div class="p-6">
+              <div class="flex items-start justify-between gap-4">
+                <h2 class="text-xl font-bold text-[#354041]"><%= property.title %></h2>
+                <span class="whitespace-nowrap text-lg font-extrabold text-[#9a784d]">
+                  ₹<%= number_with_delimiter(property.price) %>
+                </span>
+              </div>
+              <p class="mt-2 text-sm text-gray-500"><%= property.property_type %> · <%= property.location %></p>
+
+              <% if property.description.present? %>
+                <p class="mt-4 line-clamp-2 text-sm leading-6 text-gray-600"><%= property.description %></p>
+              <% end %>
+
+              <div class="mt-6">
+                <% if user_signed_in? && (current_user.active_member? || current_user.admin?) %>
+                  <%= link_to "View details", property_path(property),
+                      class: "block rounded-xl bg-[#354041] px-5 py-3 text-center font-bold text-white hover:bg-black" %>
+                <% elsif user_signed_in? %>
+                  <%= link_to "Become a member", new_membership_payment_path,
+                      class: "block rounded-xl bg-[#ccaa79] px-5 py-3 text-center font-bold text-[#354041] hover:bg-[#b48f5c]" %>
+                <% else %>
+                  <%= link_to "Sign in to view", new_user_session_path,
+                      class: "block rounded-xl bg-[#354041] px-5 py-3 text-center font-bold text-white hover:bg-black" %>
+                <% end %>
+              </div>
+            </div>
+          </article>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="rounded-2xl bg-white px-6 py-16 text-center shadow-sm">
+        <h2 class="text-2xl font-bold text-[#354041]">No properties found</h2>
+        <p class="mt-2 text-gray-500">Try changing your search or price filters.</p>
+      </div>
+    <% end %>
+
+    <% if user_signed_in? && (current_user.active_member? || current_user.admin?) %>
+      <div class="mt-12 text-center">
+        <%= link_to "List a new property", new_property_path,
+            class: "inline-flex rounded-xl bg-[#354041] px-8 py-3 font-bold text-white hover:bg-black" %>
+      </div>
+    <% end %>
+  </div>
+</section>

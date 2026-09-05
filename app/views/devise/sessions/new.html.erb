@@ -1,0 +1,68 @@
+<div class="relative min-h-screen flex items-center justify-center px-4 bg-gray-900">
+  <!-- Background Image -->
+  <div class="absolute inset-0 z-0">
+    <img
+      src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=80"
+      alt="Background Property"
+      class="w-full h-full object-cover"
+    />
+    <div class="absolute inset-0 bg-black bg-opacity-30 backdrop-blur-sm"></div>
+  </div>
+
+  <!-- Form Container -->
+  <div class="relative z-10 bg-white bg-opacity-95 backdrop-blur-md rounded-3xl shadow-2xl w-full max-w-7xl min-h-[70vh] flex overflow-hidden">
+
+    <!-- Left Side: Image and Text -->
+    <div class="w-3/5 relative hidden lg:block">
+      <img
+        src="https://images.unsplash.com/photo-1572120360610-d971b9d7767c?auto=format&fit=crop&w=1200&q=80"
+        alt="Luxury House"
+        class="w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-black bg-opacity-30 flex flex-col justify-end p-10">
+        <h2 class="text-white text-4xl font-bold mb-2">Welcome Back</h2>
+        <p class="text-gray-300 text-base">Sign in to manage your listings and discover your dream property.</p>
+      </div>
+    </div>
+
+    <!-- Right Side: Login Form -->
+    <div class="w-full lg:w-2/5 flex flex-col justify-center p-8 sm:p-10">
+      <div class="text-right mb-2">
+        <%= link_to "Sign Up", new_registration_path(resource_name), class: "px-5 py-2 text-sm text-white bg-black rounded-full hover:bg-gray-800" %>
+      </div>
+
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">Log In</h2>
+      <p class="text-sm text-gray-500 mb-4">Access your Realnest dashboard</p>
+
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+        <%= render "devise/shared/error_messages", resource: resource %>
+
+        <div class="mb-3">
+          <%= f.label :email, class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" %>
+        </div>
+
+        <div class="mb-3">
+          <%= f.label :password, class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.password_field :password, autocomplete: "current-password", class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" %>
+        </div>
+
+        <% if devise_mapping.rememberable? %>
+          <div class="mb-3 flex items-center">
+            <%= f.check_box :remember_me, class: "mr-2" %>
+            <%= f.label :remember_me, class: "text-sm text-gray-600" %>
+          </div>
+        <% end %>
+
+        <div class="mt-5">
+          <%= f.submit "Log In", class: "w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition" %>
+        </div>
+      <% end %>
+
+      <p class="text-center text-sm text-gray-600 mt-5">
+        New to Realnest?
+        <%= link_to "Sign Up", new_registration_path(resource_name), class: "text-blue-600 hover:underline" %>
+      </p>
+    </div>
+  </div>
+</div>
