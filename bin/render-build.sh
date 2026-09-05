@@ -16,6 +16,7 @@ BUNDLE_FORCE_RUBY_PLATFORM=false bundle install --verbose
 
 echo "==> Migrating database"
 bundle exec rails db:migrate
+bundle exec rails db:seed
 
 echo "==> Precompiling assets"
 SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile
