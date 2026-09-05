@@ -1,0 +1,9 @@
+<footer class="bg-[#354041] py-8 text-[#d6ad72]">
+  <div class="container mx-auto px-4 text-center">
+    <p class="text-sm">© <%= Time.current.year %> HamaraGroup. All rights reserved.</p>
+    <div class="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs text-gray-300">
+      <%= link_to "Properties", properties_path, class: "hover:text-white hover:underline" %>
+      <%= link_to "Contact / Consultation", new_consultation_request_path, class: "hover:text-white hover:underline" if user_signed_in? %>
+    </div>
+  </div>
+</footer>

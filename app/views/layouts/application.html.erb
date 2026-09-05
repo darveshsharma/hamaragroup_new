@@ -1,0 +1,32 @@
+<head>
+  <title>Chandela Estates</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: 'PT Serif', Helvetica, sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+  </style>
+
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+</head>
+<body class="flex flex-col min-h-screen relative">
+  <%= render 'shared/navbar' %>
+
+  <main class="flex-grow">
+    <%= yield %>
+  </main>
+
+  <%= render 'shared/footer' %>
+</body>
+

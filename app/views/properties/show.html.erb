@@ -1,0 +1,193 @@
+<div class="container mx-auto px-4 py-8 relative">
+  <!-- Property Title & Verified Ribbon -->
+  <div class="relative">
+    <h1 class="text-4xl font-bold text-center mb-8 text-[#354041] font-manrope"><%= @property.title %></h1>
+
+    <% if @property.approved? %>
+      <div class="absolute right-0 top-0 transform translate-x-4 -translate-y-4">
+        <div class="bg-green-500 text-white text-xs font-bold py-1 px-3 rounded shadow-lg rotate-12">✔ Verified</div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-8">
+    <!-- Images Section -->
+    <div>
+      <div class="relative">
+        <!-- Main Image -->
+        <div class="overflow-hidden rounded shadow-lg">
+          <% main_image_url = nil %>
+
+          <% if @property.images.attached? %>
+            <% main_image_url = url_for(@property.images.first) %>
+          <% elsif @property.images_table_records.any? && @property.images_table_records.first.main_image.present? %>
+            <% main_image_url = @property.images_table_records.first.main_image %>
+          <% end %>
+
+          <% if main_image_url.present? %>
+            <img id="mainImage" src="<%= main_image_url %>" alt="Main Image" class="w-full object-cover cursor-pointer" data-zoomable>
+          <% else %>
+            <img src="https://via.placeholder.com/600x400?text=No+Image" alt="No Image" class="w-full object-cover">
+          <% end %>
+        </div>
+
+        <!-- Thumbnails Carousel -->
+        <div class="mt-4 relative">
+          <% thumbnails = [] %>
+
+          <% if @property.images.attached? %>
+            <% @property.images.each { |img| thumbnails << { url: url_for(img) } } %>
+          <% end %>
+
+          <% @property.images_table_records.each do |img_record| %>
+            <% thumbnails << { url: img_record.thumbnail } if img_record.thumbnail.present? %>
+            <% (1..10).each do |i| %>
+              <% image_url = img_record.send("image#{i}_url") %>
+              <% thumbnails << { url: image_url } if image_url.present? %>
+            <% end %>
+          <% end %>
+
+          <% if thumbnails.size >= 4 %>
+            <button id="thumbPrev" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-300 hover:bg-gray-400 text-black px-2 py-1 rounded-l z-10">&lt;</button>
+          <% end %>
+
+          <div id="thumbnailsContainer" class="overflow-x-auto whitespace-nowrap scrollbar-hide">
+            <% thumbnails.each do |thumb| %>
+              <img src="<%= thumb[:url] %>" alt="Thumbnail" class="inline-block w-24 h-24 object-cover rounded shadow cursor-pointer mx-1" onclick="changeMainImage('<%= thumb[:url] %>')">
+            <% end %>
+          </div>
+
+          <% if thumbnails.size >= 4 %>
+            <button id="thumbNext" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-300 hover:bg-gray-400 text-black px-2 py-1 rounded-r z-10">&gt;</button>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Property Details -->
+    <div class="space-y-4 text-[#354041] font-mulish">
+      <p><strong>Description:</strong> <%= @property.description %></p>
+      <p><strong>Price:</strong> ₹<%= number_with_delimiter(@property.price) %></p>
+      <p><strong>Location:</strong> <%= @property.location %></p>
+      <p><strong>Type:</strong> <%= @property.property_type %></p>
+      <p><strong>Subtype:</strong> <%= @property.subtype %></p>
+      <p><strong>Ownership Type:</strong> <%= @property.ownership_type %></p>
+      <p><strong>Total Area:</strong> <%= @property.total_area %></p>
+      <p><strong>Jamabandi Year:</strong> <%= @property.jamabandi_year %></p>
+      <p><strong>Boundaries:</strong> <%= @property.boundaries %></p>
+      <p><strong>Dispute Status:</strong> <%= @property.dispute_status %></p>
+      <p><strong>Dispute Summary:</strong> <%= @property.dispute_summary %></p>
+      <p><strong>Status:</strong>
+        <% if @property.approved? %>
+          <%= @property.status.titleize %>
+        <% else %>
+          Available
+        <% end %>
+      </p>
+
+      <!-- Consultation button -->
+      <div class="mt-6">
+        <%= link_to "Request Consultation", new_property_consultation_request_path(@property), class: "bg-[#ccaa79] text-[#354041] px-6 py-3 rounded font-bold text-lg hover:bg-[#b8986a] inline-block" %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Property Documents -->
+  <div class="mt-12">
+    <% if current_user == @property.user || @has_paid %>
+      <div class="bg-green-100 text-green-900 p-4 rounded border border-green-300">
+        <h2 class="text-xl font-semibold mb-4">Download Verified Documents</h2>
+
+        <% @property.title_document_files.each do |doc| %>
+          <p><%= link_to "Download Title Document", rails_blob_path(doc, disposition: "attachment"), target: "_blank", class: "text-blue-600 underline" %></p>
+        <% end %>
+        <% @property.mutation_document_files.each do |doc| %>
+          <p><%= link_to "Download Mutation Document", rails_blob_path(doc, disposition: "attachment"), target: "_blank", class: "text-blue-600 underline" %></p>
+        <% end %>
+        <% @property.aksfard_document_files.each do |doc| %>
+          <p><%= link_to "Download Aksfard Document", rails_blob_path(doc, disposition: "attachment"), target: "_blank", class: "text-blue-600 underline" %></p>
+        <% end %>
+        <% @property.court_case_document_files.each do |doc| %>
+          <p><%= link_to "Download Court Case Document", rails_blob_path(doc, disposition: "attachment"), target: "_blank", class: "text-blue-600 underline" %></p>
+        <% end %>
+        <% @property.supporting_documents.each do |doc| %>
+          <p><%= link_to "Download Supporting Document", rails_blob_path(doc, disposition: "attachment"), target: "_blank", class: "text-blue-600 underline" %></p>
+        <% end %>
+
+        <div class="mt-4">
+          <%= link_to "Download All as ZIP", download_documents_property_path(@property), class: "bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 inline-block", id: "download-all-btn" %>
+        </div>
+      </div>
+    <% else %>
+      <div class="bg-yellow-100 text-yellow-900 p-4 rounded border border-yellow-300">
+        <h2 class="text-xl font-semibold mb-2">Unlock Verified Documents</h2>
+        <p>To download all property documents, a one-time payment of <strong>1% of the property price</strong> is required.</p>
+        <p class="mt-2 text-lg font-semibold">Amount: ₹<%= number_with_delimiter((@property.price * 0.01).round(2)) %></p>
+        <div class="mt-4">
+          <%= link_to "Pay & Download Documents", new_property_payment_path(@property), class: "bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 font-semibold inline-block" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Edit and Back Buttons -->
+  <div class="mt-12 flex space-x-4">
+    <% if current_user == @property.user || current_user.admin? %>
+      <%= link_to 'Edit Property', edit_property_path(@property), class: "bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-600 inline-block" %>
+    <% end %>
+    <%= link_to 'Back to Properties', properties_path, class: "bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400 inline-block" %>
+  </div>
+</div>
+
+<!-- JS functions -->
+<script>
+  function changeMainImage(url) {
+    document.getElementById('mainImage').src = url;
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('[data-zoomable]').forEach(img => {
+      img.addEventListener('click', function () {
+        const src = this.src;
+        const modalHTML = `
+          <div class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50" id="zoomModal">
+            <div class="relative">
+              <button class="absolute top-0 right-0 mt-2 mr-2 text-white text-2xl font-bold" id="closeZoom">&times;</button>
+              <img src="${src}" class="max-h-screen max-w-screen rounded shadow-lg">
+            </div>
+          </div>`;
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+        document.getElementById('closeZoom').addEventListener('click', () => document.getElementById('zoomModal').remove());
+        document.getElementById('zoomModal').addEventListener('click', e => {
+          if (e.target.id === 'zoomModal') document.getElementById('zoomModal').remove();
+        });
+      });
+    });
+
+    const container = document.getElementById('thumbnailsContainer');
+    const thumbPrev = document.getElementById('thumbPrev');
+    const thumbNext = document.getElementById('thumbNext');
+
+    if (thumbPrev && thumbNext) {
+      thumbPrev.addEventListener('click', () => container.scrollBy({ left: -200, behavior: 'smooth' }));
+      thumbNext.addEventListener('click', () => container.scrollBy({ left: 200, behavior: 'smooth' }));
+    }
+
+    const downloadAllBtn = document.getElementById("download-all-btn");
+    if (downloadAllBtn) {
+      downloadAllBtn.addEventListener("click", function () {
+        const loadingMsg = document.createElement("div");
+        loadingMsg.innerText = "Preparing your download...";
+        loadingMsg.className = "fixed bottom-4 right-4 bg-black text-white px-4 py-2 rounded shadow z-50";
+        document.body.appendChild(loadingMsg);
+        setTimeout(() => loadingMsg.remove(), 4000);
+      });
+    }
+  });
+</script>
+
+<style>
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+</style>

@@ -1,0 +1,102 @@
+<nav class="bg-white shadow-md">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-20">
+
+      <!-- Logo -->
+      <div class="flex items-center space-x-3">
+        <%= link_to root_path do %>
+          <%= image_tag "hamara.png", alt: "Hamara Group Logo", class: "h-12 w-auto max-w-[140px]" %>
+        <% end %>
+        <%= link_to 'HamaraGroup', root_path, class: "text-2xl font-bold text-indigo-600" %>
+      </div>
+
+      <!-- Desktop Menu -->
+      <div class="hidden sm:flex sm:items-center sm:space-x-6">
+        <% if user_signed_in? %>
+          <% if current_user.admin? %>
+            <%= link_to 'Admin Dashboard', admin_root_path, class: "text-gray-900 hover:text-indigo-600 text-lg font-medium" %>
+          <% else %>
+            <%= link_to 'Explore Properties', properties_path, class: "text-gray-900 hover:text-indigo-600 text-lg font-medium" %>
+            <%= link_to 'Membership', new_membership_payment_path, class: "text-gray-900 hover:text-indigo-600 text-lg font-medium" %>
+
+            <% if current_user.active_member? %>
+              <%= link_to 'List Property', new_property_path, class: "text-gray-900 hover:text-indigo-600 text-lg font-medium" %>
+              <%= link_to 'Consultation', new_consultation_request_path, class: "text-gray-900 hover:text-indigo-600 text-lg font-medium" %>
+            <% else %>
+              <%= link_to 'List Property', new_membership_payment_path, class: "text-gray-900 hover:text-indigo-600 text-lg font-medium", data: { turbo: false } %>
+              <%= link_to 'Consultation', new_membership_payment_path, class: "text-gray-900 hover:text-indigo-600 text-lg font-medium", data: { turbo: false } %>
+            <% end %>
+          <% end %>
+
+          <!-- Profile Icon -->
+          <%= link_to edit_profile_path, class: "hover:text-indigo-600 text-gray-900" do %>
+            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A6.5 6.5 0 0112 15a6.5 6.5 0 016.879 2.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          <% end %>
+
+          <%= link_to 'Logout', destroy_user_session_path, method: :delete, data: { turbo: false }, class: "text-red-500 text-lg font-medium" %>
+        <% else %>
+          <%= link_to 'Home', root_path, class: "text-gray-900 hover:text-indigo-600 text-lg font-medium" %>
+          <%= link_to 'Explore', properties_path, class: "text-gray-900 hover:text-indigo-600 text-lg font-medium" %>
+          <%= link_to 'Consultation', new_consultation_request_path, class: "text-gray-900 hover:text-indigo-600 text-lg font-medium" %>
+          <%= link_to 'Login', new_user_session_path, class: "text-gray-900 hover:text-indigo-600 text-lg font-medium" %>
+          <%= link_to 'Register', new_user_registration_path, class: "text-gray-900 hover:text-indigo-600 text-lg font-medium" %>
+        <% end %>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <div class="sm:hidden">
+        <button id="mobile-menu-button" class="text-3xl focus:outline-none">☰</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden sm:hidden px-4 pb-4">
+    <% if user_signed_in? %>
+      <% if current_user.admin? %>
+        <%= link_to 'Admin Dashboard', admin_root_path, class: "block text-gray-900 hover:text-indigo-600 py-2 text-lg font-medium" %>
+      <% else %>
+        <%= link_to 'Explore Properties', properties_path, class: "block text-gray-900 hover:text-indigo-600 py-2 text-lg font-medium" %>
+        <%= link_to 'Membership', new_membership_payment_path, class: "block text-gray-900 hover:text-indigo-600 py-2 text-lg font-medium" %>
+
+        <% if current_user.active_member? %>
+          <%= link_to 'List Property', new_property_path, class: "block text-gray-900 hover:text-indigo-600 py-2 text-lg font-medium" %>
+          <%= link_to 'Consultation', new_consultation_request_path, class: "block text-gray-900 hover:text-indigo-600 py-2 text-lg font-medium" %>
+        <% else %>
+          <%= link_to 'List Property', new_membership_payment_path, class: "block text-gray-900 hover:text-indigo-600 py-2 text-lg font-medium", data: { turbo: false } %>
+          <%= link_to 'Consultation', new_membership_payment_path, class: "block text-gray-900 hover:text-indigo-600 py-2 text-lg font-medium", data: { turbo: false } %>
+        <% end %>
+      <% end %>
+
+      <!-- Profile Mobile -->
+      <%= link_to edit_profile_path, class: "block py-2 text-lg font-medium text-gray-900 hover:text-indigo-600 flex items-center space-x-2" do %>
+        <svg class="w-5 h-5 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A6.5 6.5 0 0112 15a6.5 6.5 0 016.879 2.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <span>Profile</span>
+      <% end %>
+
+      <%= link_to 'Logout', destroy_user_session_path, method: :delete, data: { turbo: false }, class: "block text-red-500 py-2 text-lg font-medium" %>
+    <% else %>
+      <%= link_to 'Home', root_path, class: "block text-gray-900 hover:text-indigo-600 py-2 text-lg font-medium" %>
+      <%= link_to 'Explore', properties_path, class: "block text-gray-900 hover:text-indigo-600 py-2 text-lg font-medium" %>
+      <%= link_to 'Consultation', new_consultation_request_path, class: "block text-gray-900 hover:text-indigo-600 py-2 text-lg font-medium" %>
+      <%= link_to 'Login', new_user_session_path, class: "block text-gray-900 hover:text-indigo-600 py-2 text-lg font-medium" %>
+      <%= link_to 'Register', new_user_registration_path, class: "block text-gray-900 hover:text-indigo-600 py-2 text-lg font-medium" %>
+    <% end %>
+  </div>
+</nav>
+
+<!-- Toggle Mobile Menu Script -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const button = document.getElementById("mobile-menu-button");
+    const menu = document.getElementById("mobile-menu");
+
+    button.addEventListener("click", function () {
+      menu.classList.toggle("hidden");
+    });
+  });
+</script>

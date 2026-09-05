@@ -1,0 +1,83 @@
+<!-- Underlapping full-screen background image -->
+<div class="fixed inset-0 -z-10">
+  <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.0.3&ixid=M3w0MTUzNjZ8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBob3VzZXxlbnwwfHx8fDE2OTU4NjgxODN8MA&auto=format&fit=crop&w=1470&q=80" alt="Background" class="w-full h-full object-cover">
+  <div class="absolute inset-0 bg-black opacity-30"></div>
+</div>
+
+<div class="relative z-10">
+
+ <!-- First Section -->
+ <section class="min-h-screen flex flex-col justify-center items-center text-center px-6 py-8 bg-[#354041]">
+
+  <!-- Logo -->
+  <%= image_tag "download.png", alt: "Hamara Group Logo", style: "width: 100%; height: 100%; max-width: 12rem; max-height: 12rem;", class: "mx-auto my-4" %>
+
+  <!-- Main Heading -->
+  <h1 class="font-[Manrope] text-[#ccaa79] text-[5em] leading-tight tracking-wide mb-5">
+    <strong>Real Estate Redefined</strong>
+  </h1>
+
+  <!-- Subheading -->
+  <p class="font-[Mulish] text-[#ccaa79] text-[1.875em] leading-snug mb-8">
+    We help you find the perfect home.
+  </p>
+
+  <!-- Button -->
+  <a href="/properties"
+     class="bg-[#ccaa79] text-[#354041] px-5 py-4 font-bold text-[1.25em] rounded-md border-[5px] border-double border-[#354041] hover:bg-[#b48f5c] transition"
+     >
+    VIEW PROPERTIES
+  </a>
+
+</section>
+
+<!-- Second Section (fully transparent) -->
+<section class="min-h-screen flex flex-col justify-center items-center text-white px-4">
+
+</section>
+
+<!-- Third Section: Featured Properties (dynamic) -->
+<section class="py-20 bg-[#354041] text-[#d6ad72]">
+  <h2 class="text-4xl font-bold text-center mb-12">Featured Properties</h2>
+
+  <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
+    <% @properties.select(&:featured?).first(3).each do |property| %>
+      <div class="text-center">
+        <% if property.main_image.attached? %>
+          <%= image_tag property.main_image, alt: property.title, class: "rounded-lg mb-4 w-full h-64 object-cover" %>
+        <% else %>
+          <img src="https://via.placeholder.com/400x300?text=No+Image" alt="No Image" class="rounded-lg mb-4 w-full h-64 object-cover">
+        <% end %>
+        <h3 class="text-xl font-semibold"><%= property.title %></h3>
+        <p><%= property.property_type %> · ₹<%= number_with_delimiter(property.price) %></p>
+        <a href="<%= property_path(property) %>" class="inline-block mt-2 px-4 py-2 bg-[#ccaa79] text-[#354041] font-bold rounded hover:bg-[#b48f5c]">View Details</a>
+      </div>
+    <% end %>
+
+    <% if @properties.none?(&:featured?) %>
+      <p class="col-span-3 text-center">No featured properties available.</p>
+    <% end %>
+  </div>
+</section>
+
+
+<!-- Fourth Section: Client Testimonials (unchanged) -->
+<section class="py-20 bg-[#d6ad72] text-[#354041]">
+  <h2 class="text-4xl font-bold text-center mb-12">Client Testimonials</h2>
+  <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
+    <div class="text-center italic">
+      <p>"They patiently explained everything, answered all my questions, and helped me find a house that fit both my budget and my lifestyle."</p>
+      <p class="mt-4 font-bold">Jessica K.</p>
+    </div>
+    <div class="text-center italic">
+      <p>"They were also excellent negotiators and secured a great offer for me. I highly recommend them to anyone looking to sell their home quickly and efficiently."</p>
+      <p class="mt-4 font-bold">Leon Y.</p>
+    </div>
+    <div class="text-center italic">
+      <p>"Their expertise in the local market is invaluable, and their dedication to their clients is unmatched."</p>
+      <p class="mt-4 font-bold">Clint E.</p>
+    </div>
+  </div>
+</section>
+
+</div>

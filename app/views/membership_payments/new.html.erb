@@ -1,0 +1,100 @@
+<section class="min-h-[70vh] bg-gray-50 px-4 py-12">
+  <div class="mx-auto max-w-2xl">
+    <div class="overflow-hidden rounded-3xl bg-white shadow-xl">
+      <div class="bg-[#354041] px-8 py-10 text-center text-white">
+        <p class="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-[#d6ad72]">HamaraGroup</p>
+        <h1 class="text-4xl font-bold">Become a Member</h1>
+        <p class="mx-auto mt-3 max-w-lg text-gray-200">
+          Unlock verified property details, property listing, and consultation services.
+        </p>
+      </div>
+
+      <div class="px-8 py-10">
+        <div class="mb-8 rounded-2xl border border-gray-200 bg-gray-50 p-6 text-center">
+          <p class="text-sm font-medium text-gray-500">One-time membership</p>
+          <p class="mt-2 text-4xl font-extrabold text-[#354041]">
+            ₹<%= number_with_delimiter(MembershipPaymentsController::MEMBERSHIP_AMOUNT.to_i) %>
+          </p>
+        </div>
+
+        <button
+          id="rzp-button"
+          type="button"
+          class="w-full rounded-xl bg-[#ccaa79] px-6 py-4 font-bold text-[#354041] transition hover:bg-[#b48f5c] disabled:cursor-not-allowed disabled:opacity-60">
+          Pay securely with Razorpay
+        </button>
+
+        <p id="payment-status" class="mt-4 text-center text-sm text-gray-500"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const button = document.getElementById("rzp-button");
+    const status = document.getElementById("payment-status");
+
+    button.addEventListener("click", async function () {
+      button.disabled = true;
+      status.textContent = "Creating your secure payment order...";
+
+      try {
+        const orderResponse = await fetch("<%= membership_payments_path %>", {
+          method: "POST",
+          headers: {
+            "X-CSRF-Token": "<%= form_authenticity_token %>",
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({})
+        });
+
+        const order = await orderResponse.json();
+        if (!orderResponse.ok) throw new Error(order.error || "Unable to create payment order.");
+
+        const razorpay = new Razorpay({
+          key: "<%= Rails.application.credentials.dig(:razorpay, :key_id) %>",
+          amount: order.amount,
+          currency: order.currency,
+          name: "HamaraGroup",
+          description: "Membership",
+          order_id: order.id,
+          prefill: { email: "<%= current_user.email %>" },
+          theme: { color: "#354041" },
+          handler: async function (response) {
+            status.textContent = "Verifying your payment...";
+
+            const verifyResponse = await fetch("<%= verify_membership_payments_path %>", {
+              method: "POST",
+              headers: {
+                "X-CSRF-Token": "<%= form_authenticity_token %>",
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+              },
+              body: JSON.stringify(response)
+            });
+
+            const result = await verifyResponse.json();
+            if (!verifyResponse.ok || !result.success) {
+              throw new Error(result.error || "Payment verification failed.");
+            }
+
+            window.location.href = result.redirect_url;
+          }
+        });
+
+        razorpay.on("payment.failed", function () {
+          status.textContent = "Payment was not completed. You can try again.";
+          button.disabled = false;
+        });
+
+        razorpay.open();
+      } catch (error) {
+        status.textContent = error.message;
+        button.disabled = false;
+      }
+    });
+  });
+</script>
