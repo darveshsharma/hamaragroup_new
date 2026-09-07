@@ -73,7 +73,7 @@ end
 
 gem 'stripe'
 
-gem 'rubyzip', '~> 2.3'
+gem 'rubyzip', '~> 3.6'
 
 
 
